@@ -1,0 +1,494 @@
+/* src/styles.scss */
+/* 1. Use a more-intuitive box-sizing model */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margin */
+* {
+  margin: 0;
+}
+
+body {
+  /* 3. Add accessible line-height */
+  line-height: 1.5;
+  /* 4. Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 5. Improve media defaults */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 6. Inherit fonts for form controls */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* 7. Avoid text overflows */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+/* 8. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+/*
+  9. Create a root stacking context
+*/
+#root,
+#__next {
+  isolation: isolate;
+}
+
+// Font Face
+@font-face {
+  font-family: Hanken-regular;
+  src: url("../fonts/HankenGrotesk-Regular.ttf");
+}
+
+/* styles.scss */
+$primary-color: #007bff;
+$background-color: #ffeb0f;
+$circle-size: 180px;
+
+/* 1. General Styles */
+body {
+  margin: 0;
+  font-family: Hanken-regular;
+  background-color: #ffeb0f;
+}
+.three, .four {
+    position: relative;
+    width: 100%;
+    height: 318px;
+    background-color: white;
+    --before-top: 0px; /* Default value */
+}
+
+.two {
+    position: relative;
+    width: 100%;
+    --before-top: 0px; /* Default value */
+    --after-height: 318px;
+    &::before {
+        content: '';
+        position: absolute;
+        top: var(--before-top, 0px); /* Start at 0px */
+        left: 0;
+        right: 0;
+        width: 101%;
+        height: 318px; /* Adjust height */
+        background: url('../public/images/Union22.svg') no-repeat;
+        background-position: top center;
+        background-size: cover;
+        z-index: 2;
+        transition: top 0.3s ease-out; /* Smooth transition */
+      }
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: var(--after-height, 318px); /* Adjust height */
+        background-position: bottom;
+        background-size: cover;
+        z-index: 1;
+        background-color: black;
+        transition: top 0.3s ease-out; /* Smooth transition */
+    }
+    
+  
+    .content {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2; /* Ensure it's above the before element */
+      color: white;
+      bottom: 0;
+      height: 318px;
+      font-size: 1.25rem;
+      text-align: center;
+      transform: translateY(0); /* Start at 0 */
+      transition: transform 0.3s ease-out; /* Smooth transition */
+      gap: 6rem;
+      padding-top: 80px;
+      .item {
+        display: flex;
+        gap: 1rem;
+        max-width: 383px;
+        border-radius: 50%;
+        padding: 0;
+        img {
+            min-width: 150px;
+            min-height: 150px;
+            object-fit: cover;
+            background-size: cover;
+            border-radius: 50%;
+            padding: 0;
+            overflow: hidden;
+        }
+        .body{
+            h3 {
+                color: white;
+                font-size: 24px;
+                line-height: 32px;
+            }
+            p {
+                font-weight: 400;
+                font-size: 0.8rem;
+                line-height: 20px;
+            }
+        }
+        
+      }
+    }
+  }
+
+.workflow-container {
+  position: relative;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  max-height: 700px;
+  background-color: #ffeb0f;
+}
+
+/* 2. SVG Styling */
+.workflow-svg {
+  display: block;
+  width: calc(100% - 150px); /* Account for 50px left and 100px right margins */
+  height: auto;
+  margin-left: 50px;
+  margin-right: 100px;
+
+  path {
+    stroke: black;
+    stroke-width: 3;
+    fill: none;
+    stroke-dasharray: 0; /* Example length, adjust as needed */
+    stroke-dashoffset: 3500; /* Initially hidden for animation */
+    transition: stroke-dashoffset 0.3s ease-out;
+  }
+}
+
+/* 3. Circle Styling */
+.circle {
+  position: absolute;
+  width: $circle-size;
+  height: $circle-size;
+  border-radius: 50%;
+  perspective: 500px;
+  transform: translate(-50%, -50%);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+
+  &.flip .content {
+    transform: rotateY(180deg);
+    transition: transform 1s;
+  }
+  .content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    transition: transform 1s;
+    transform-style: preserve-3d;
+  }
+  .front,
+  .back {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    background: white;
+    padding: 1rem;
+    color: black;
+    text-align: center;
+    font-size: 1rem;
+    border-radius: 50%;
+    backface-visibility: hidden;
+  }
+  .front {
+    font-size: 18px;
+    line-height: 23px;
+    font-weight: 500;
+    img {
+      max-width: 50px;
+      aspect-ratio: 1;
+    }
+  }
+  .back {
+    background: white;
+    color: black;
+    transform: rotateY(180deg);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 22px;
+    img {
+      max-width: 40px;
+      aspect-ratio: 1;
+    }
+  }
+}
+
+
+
+.hero-title {
+  position: absolute;
+  font-size: 96px;
+  white-space: nowrap;
+  opacity: 1;
+}
+/* Animated Text Start State */
+.animated-text {
+  position: absolute;
+  opacity: 0;
+  font-size: 48px;
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+//   &::after {
+//     position: absolute;
+//     content: "";
+//     top: 0;
+//     right: -210px;
+//     background-image: url("../public/images/Illuminator-yellow_1.png");
+//     background-repeat: no-repeat;
+//     width: 522px;
+//     height: 294px;
+//     z-index: 1000;
+//   }
+}
+
+.carousel {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  width: 100%;
+}
+
+.carousel-slide {
+  flex: 0 0 100%;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Main Video Slide */
+/* Slide Container */
+.slide.slide__video {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    overflow: hidden;
+  }
+  
+  /* Yellow Blob */
+  .yellow-blob {
+    position: absolute;
+    top: 30%;
+    right: -20px;
+    width: 475px;
+    height: 445px;
+    z-index: 0;
+    rotate: 0deg;
+  }
+  
+  /* White Wave Border */
+  .blob-mask-white {
+    position: absolute;
+    top: 0px;
+    right: 30px;
+    width: 1209px;
+    height: 1166px;
+    background-color: white;
+    z-index: 1;
+    clip-path: path(
+      "M1076.43 429.163C846.667 622.678 709.296 527.955 646.672 459.363C596.426 404.328 544.842 320.857 526.011 283.545C484.072 200.445 484.744 203.126 302.559 164.383C118.999 125.347 71.4601 4.75398 41.7839 -57.232C-57.1533 -263.886 44.804 -463.376 121.826 -542.313C302.135 -710.23 435.555 -614.128 507.211 -568.637C578.866 -523.145 667.324 -448.557 739.631 -424.714C797.476 -405.639 870.469 -395.201 933.208 -386.388C1080.43 -365.708 1132.77 -217.577 1151.95 -153.802C1196.68 -22.4493 1260.24 274.352 1076.43 429.163Z"
+    );
+  }
+  
+  /* Main Blob Mask */
+  .blob-mask {
+    position: absolute;
+    top: 0;
+    right: -30px;
+    width: 1209px;
+    height: 100%; /* Matches the SVG height */
+    z-index: 2;
+    clip-path: path(
+      "M1076.43 429.163C846.667 622.678 709.296 527.955 646.672 459.363C596.426 404.328 544.842 320.857 526.011 283.545C484.072 200.445 484.744 203.126 302.559 164.383C118.999 125.347 71.4601 4.75398 41.7839 -57.232C-57.1533 -263.886 44.804 -463.376 121.826 -542.313C302.135 -710.23 435.555 -614.128 507.211 -568.637C578.866 -523.145 667.324 -448.557 739.631 -424.714C797.476 -405.639 870.469 -395.201 933.208 -386.388C1080.43 -365.708 1132.77 -217.577 1151.95 -153.802C1196.68 -22.4493 1260.24 274.352 1076.43 429.163Z"
+    );
+  }
+  
+  .blob-mask .video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .blob-mask .video img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .blob-mask .video .play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #6a0dad;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    font-size: 24px;
+    z-index: 2;
+  }
+  
+  /* Text and Button */
+  .slide__inner {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    bottom: 10%;
+    left: 10%;
+    text-align: left;
+    color: white;
+    z-index: 2;
+    max-width: 381px;
+  }
+  
+  .slide__inner h3 {
+    font-size: 40px;
+    margin-bottom: 1rem;
+    line-height: 48px;
+  }
+  
+  .slide__inner p {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+  
+  .slide__inner .button {
+    display: inline-block;
+    background-color: #fff;
+    border: 2px solid #6a0dad;
+    color: #6a0dad;
+    padding: 12px 20px 12px 20px;
+    text-decoration: none;
+    border-radius: 40px;
+    font-size: 1rem;
+    font-weight: bold;
+    width: max-content;
+    transition: background-color 0.3s ease;
+  }
+  
+  .slide__inner .button:hover {
+    background-color: #570e86;
+  }
+  
+
+
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 1);
+  color: black;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: all 0.3s ease-in;
+}
+
+.carousel-control.prev {
+  left: 20px;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.carousel-control.next {
+  right: 20px;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.carousel-control:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: none;
+}
+
+/* 4. Responsiveness */
+@media (max-width: 768px) {
+  .workflow-container {
+    padding: 20px;
+  }
+
+  .workflow-svg {
+    width: calc(100% - 50px); /* Adjust for smaller margins */
+    margin-left: 25px;
+    margin-right: 25px;
+  }
+
+  .circle {
+    width: 25px;
+    height: 25px;
+  }
+}
