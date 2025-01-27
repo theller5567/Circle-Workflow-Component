@@ -75,7 +75,7 @@ h6 {
 }
 
 /* styles.scss */
-$primary-color: #007bff;
+$purple-color: #6a0dad;
 $background-color: #ffeb0f;
 $circle-size: 180px;
 
@@ -124,7 +124,7 @@ body {
         background-size: cover;
         z-index: 1;
         background-color: black;
-        transition: top 0.3s ease-out; /* Smooth transition */
+        transition: all 0.3s ease-out; /* Smooth transition */
     }
     
   
@@ -149,9 +149,12 @@ body {
         max-width: 383px;
         border-radius: 50%;
         padding: 0;
+        flex: 0 0 auto;
+        align-items: start;
+        text-align: left;
         img {
             min-width: 150px;
-            min-height: 150px;
+            height: 150px;
             object-fit: cover;
             background-size: cover;
             border-radius: 50%;
@@ -159,6 +162,10 @@ body {
             overflow: hidden;
         }
         .body{
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
             h3 {
                 color: white;
                 font-size: 24px;
@@ -168,6 +175,19 @@ body {
                 font-weight: 400;
                 font-size: 0.8rem;
                 line-height: 20px;
+            }
+            a {
+                display: inline-block;
+                border: 2px solid #fff;
+                color: white;
+                padding: 12px 20px 12px 20px;
+                text-decoration: none;
+                border-radius: 40px;
+                font-size: 1rem;
+                line-height: 22px;
+                font-weight: bold;
+                width: max-content;
+                transition: background-color 0.3s ease;
             }
         }
         

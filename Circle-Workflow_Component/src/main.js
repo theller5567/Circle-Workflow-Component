@@ -18,13 +18,64 @@ document.addEventListener('DOMContentLoaded', () => {
   // Ensure GSAP ScrollTrigger is registered
   gsap.registerPlugin(ScrollTrigger);
 
+
+  function adjustCircleSizes() {
+    const circles = document.querySelectorAll('.circle');
+    const svgPath = document.querySelector('#workflow-path');
+    const pathLength = svgPath.getTotalLength();
+    const minGap = 32; // 2rem in pixels
+    const maxRadius = 90; // Default radius
+    const circleCenters = [];
+  
+    // Calculate positions along the SVG path for each circle
+    circles.forEach((circle, index) => {
+      const offset = (index + 1) / (circles.length + 1); // Distribute evenly
+      const length = pathLength * offset;
+      const point = svgPath.getPointAtLength(length);
+      circleCenters.push({ x: point.x, y: point.y });
+    });
+  
+    // Adjust circle sizes to maintain at least a 2rem gap
+    for (let i = 0; i < circleCenters.length - 1; i++) {
+      const current = circleCenters[i];
+      const next = circleCenters[i + 1];
+  
+      const distance = Math.sqrt(
+        Math.pow(next.x - current.x, 2) + Math.pow(next.y - current.y, 2)
+      );
+  
+      // Calculate the maximum radius that ensures the minimum gap
+      const maxCircleRadius = (distance - minGap) / 2;
+      const adjustedRadius = Math.min(maxRadius, maxCircleRadius);
+  
+      circles[i].style.width = `${adjustedRadius * 2}px`;
+      circles[i].style.height = `${adjustedRadius * 2}px`;
+      circles[i].style.borderRadius = '50%'; // Ensure circles remain round
+    }
+  
+    // Adjust the last circle size
+    const lastCircle = circles[circleCenters.length - 1];
+    lastCircle.style.width = `${maxRadius * 2}px`;
+    lastCircle.style.height = `${maxRadius * 2}px`;
+    lastCircle.style.borderRadius = '50%';
+  }
+  
+  // Call this function whenever the circles are positioned
+  adjustCircleSizes();
+  
+  // If needed, debounce the function call on window resize
+  window.addEventListener('resize', debounce(adjustCircleSizes, 200));
+  
+
   ScrollTrigger.create({
     trigger: '.two', // Section being observed
-    start: 'top center',
+  start: 'top center +=300',
     end: 'bottom center',
     onEnter: () => console.log('Entered the section'),
     onLeave: () => console.log('Left the section'),
-    onUpdate: (self) => console.log('Progress:', self.progress),
+    onUpdate: (self) => console.log(
+      `Current After Height: ${getComputedStyle(section).getPropertyValue("--after-height")}`
+    ),
   });
 
   // Set initial values for the --before-top and --after-height variables in CSS
@@ -40,10 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
     markers: { startColor: "white", endColor: "white", fontSize: "18px", fontWeight: "bold", indent: 20 },
     scrollTrigger: {
       trigger: section,
-      start: "top center -50px", // Start when the section's top reaches the center of the viewport
+      start: "top center -500px", // Start when the section's top reaches the center of the viewport
       end: "+=200", // End when the section's bottom reaches the center
       scrub: true, // Smoothly tie animation to scroll
-      markers: true,
       onUpdate: (self) => {
         console.log(
           `Scroll Progress: ${self.progress}, Before Top: ${getComputedStyle(section).getPropertyValue(
@@ -56,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Animate the after pseudo-element
   gsap.to(section, {
-    "--after-height": "200px", // Animate the pseudo-element's height
+    "--after-height": "100px", // Animate the pseudo-element's height
     ease: "none", // Linear animation for smooth scrolling
     scrollTrigger: {
       trigger: section,
@@ -75,14 +125,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Animate the content inside the section
   gsap.to(content, {
-    y: -80, // Move content up
-    ease: "power1.out",
+    y: -50, // Move content up
+    ease: "power1.inOut",
     scrollTrigger: {
       trigger: section,
-      start: "top 300px", // Animation starts when the section's top reaches the center
+      start: "top center", // Animation starts when the section's top reaches the center
       end: "bottom center", // Animation ends when the section's bottom reaches the center
       scrub: true,
-      markers: true, // Debugging markers for content animation
       onUpdate: (self) => {
         console.log(`Content Progress: ${self.progress}`);
       },
@@ -382,6 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener("resize", debounce(() => {
     centerHeroTitle();
+    adjustCircleSizes();
     positionCircles();
   }, 200));
 });
