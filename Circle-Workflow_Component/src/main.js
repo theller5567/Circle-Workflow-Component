@@ -87,24 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
     "--after-height": "88px",
   });
   // Animate the before pseudo-element
-  gsap.to(section, {
-    "--before-top": "-80px", // Move the pseudo-element to -80px
-    ease: "none", // Linear animation for smooth scrolling
-    markers: { startColor: "white", endColor: "white", fontSize: "18px", fontWeight: "bold", indent: 20 },
-    scrollTrigger: {
-      trigger: section,
-      start: "top center -500px", // Start when the section's top reaches the center of the viewport
-      end: "+=200", // End when the section's bottom reaches the center
-      scrub: true, // Smoothly tie animation to scroll
-      onUpdate: (self) => {
-        console.log(
-          `Scroll Progress: ${self.progress}, Before Top: ${getComputedStyle(section).getPropertyValue(
-            '--before-top'
-          )}`
-        );
-      },
-    },
-  });
 
   // Animate the after pseudo-element
   gsap.to(bannerContainer, {
@@ -113,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollTrigger: {
       trigger: bannerContainer,
       start: "top", // Start when the section's top reaches the center
-      end: "bottom center", // End when the section's bottom reaches the center
+      end: "bottom +=100", // End when the section's bottom reaches the center
       scrub: true,
       onUpdate: (self) => {
         console.log(
@@ -127,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Animate the content inside the section
   gsap.to(content, {
-    y: -145, // Move content up
+    y: -165, // Move content up
     ease: "power1.inOut",
     scrollTrigger: {
       trigger: section,
