@@ -78,6 +78,7 @@ h6 {
 $purple-color: #6a0dad;
 $background-color: #ffeb0f;
 $circle-size: 180px;
+$max-container-width: 1440px;
 
 /* 1. General Styles */
 body {
@@ -85,218 +86,256 @@ body {
   font-family: Hanken-regular;
   background-color: #ffeb0f;
 }
-.three, .four {
-    position: relative;
-    width: 100%;
-    height: 318px;
-    background-color: white;
-    --before-top: 0px; /* Default value */
+.three,
+.four {
+  position: relative;
+  width: 100%;
+  height: 318px;
+  background-color: white;
+  --before-top: 0px; /* Default value */
 }
 
 .rvty-bg-video {
-    position: absolute;
-    top:0;
-    left:0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 640px;
+  img {
+    background-size: cover;
     width: 100%;
     height: 100%;
-    img {
-        object-fit: cover;
-        background-size: cover;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-      }
+  }
 }
 
 .rvty-hero-container {
-    position: relative;
-    background-color: black;
+  position: relative;
+  background-color: $background-color;
+  padding-bottom: 65px;
+  overflow: hidden;
 }
 
 .two {
+  position: relative;
+  width: 100%;
+  --before-top: 0px; /* Default value */
+  bottom: 0;
+  background-color: black;
+  height: 239px;
+  background-size: cover;
+  overflow: hidden;
+  .content {
     position: relative;
-    width: 100%;
-    --before-top: 0px; /* Default value */
-    bottom: 0;
-    background-color: black;
-    height: 239px;
-    background-size: cover;
-    overflow: hidden;
-    .content {
-      position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2; /* Ensure it's above the before element */
+    color: white;
+    bottom: -145px;
+    height: 214px;
+    font-size: 1.25rem;
+    text-align: center;
+    transform: translateY(0); /* Start at 0 */
+    transition: transform 0.3s ease-out; /* Smooth transition */
+    gap: 6rem;
+    .item {
       display: flex;
-      justify-content: center;
+      gap: 1rem;
+      max-width: 383px;
+      border-radius: 50%;
+      padding: 0;
+      flex: 0 0 auto;
       align-items: center;
-      z-index: 2; /* Ensure it's above the before element */
-      color: white;
-      bottom: -145px;
-      height: 214px;
-      font-size: 1.25rem;
-      text-align: center;
-      transform: translateY(0); /* Start at 0 */
-      transition: transform 0.3s ease-out; /* Smooth transition */
-      gap: 6rem;
-      .item {
-        display: flex;
-        gap: 1rem;
-        max-width: 383px;
+      text-align: left;
+      img {
+        min-width: 150px;
+        height: 150px;
+        object-fit: cover;
+        background-size: cover;
         border-radius: 50%;
         padding: 0;
-        flex: 0 0 auto;
-        align-items: start;
-        text-align: left;
-        img {
-            min-width: 150px;
-            height: 150px;
-            object-fit: cover;
-            background-size: cover;
-            border-radius: 50%;
-            padding: 0;
-            overflow: hidden;
+        overflow: hidden;
+      }
+      .body {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        h3 {
+          color: white;
+          font-size: 24px;
+          line-height: 32px;
         }
-        .body{
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            h3 {
-                color: white;
-                font-size: 24px;
-                line-height: 32px;
-            }
-            p {
-                font-weight: 400;
-                font-size: 0.8rem;
-                line-height: 20px;
-            }
-            a {
-                display: inline-block;
-                border: 2px solid #fff;
-                color: white;
-                padding: 12px 20px 12px 20px;
-                text-decoration: none;
-                border-radius: 40px;
-                font-size: 1rem;
-                line-height: 22px;
-                font-weight: bold;
-                width: max-content;
-                transition: background-color 0.3s ease;
-            }
+        p {
+          font-weight: 400;
+          font-size: 0.8rem;
+          line-height: 20px;
         }
-        
+        a {
+          display: inline-block;
+          border: 2px solid #fff;
+          color: white;
+          padding: 12px 20px 12px 20px;
+          text-decoration: none;
+          border-radius: 40px;
+          font-size: 1rem;
+          line-height: 22px;
+          font-weight: bold;
+          width: max-content;
+          transition: background-color 0.3s ease;
+        }
       }
     }
   }
+}
 
 .workflow-container {
   position: relative;
   width: 100%;
-  max-width: 1440px;
+  max-width: $max-container-width;
   margin: 0 auto;
-  max-height: 640px;
+  min-height: 640px;
   color: white;
   --after-height: 318px;
+  --svg-yallow-scale: 1.2;
 }
 
 /* 3. Circle Styling */
-.circle {
+.circles-wrapper {
   position: absolute;
-  width: $circle-size;
-  height: $circle-size;
-  border-radius: 50%;
-  perspective: 500px;
-  transform: translate(-50%, -50%);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-
-  &.flip .content {
-    transform: rotateY(180deg);
-    transition: transform 1s;
-  }
-  .content {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  top: 0;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  transform: translateX(-50%);
+  .circle {
+    width: $circle-size;
+    height: $circle-size;
     border-radius: 50%;
-    transition: transform 1s;
-    transform-style: preserve-3d;
-  }
-  .front,
-  .back {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    background: white;
-    padding: 1rem;
-    color: black;
-    text-align: center;
-    font-size: 1rem;
-    border-radius: 50%;
-    backface-visibility: hidden;
-  }
-  .front {
-    font-size: 18px;
-    line-height: 23px;
-    font-weight: 500;
-    img {
-      max-width: 50px;
-      aspect-ratio: 1;
+    perspective: 500px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    &.flip .content {
+      transform: rotateY(-180deg);
+      transition: transform 1s;
     }
-  }
-  .back {
-    background: white;
-    color: black;
-    transform: rotateY(180deg);
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 22px;
-    img {
-      max-width: 40px;
-      aspect-ratio: 1;
+    &.flipped.flip {
+      .content .back {
+        img.init-img {
+          display: none;
+          opacity: 0;
+        }
+      }
+     
+    }
+    &:hover {
+        .content {
+          width: 100%;
+          transform: rotateY(0);
+          height: 100%;
+        }
+    }
+    .init-img {
+      transition: opacity 0.3s ease-in-out; /* Smooth fade out */
+    }
+    
+    .content {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      transition: transform 1s;
+      transform-style: preserve-3d;
+    }
+    .front,
+    .back {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      background-color: black;
+      padding: 1rem;
+      color: black;
+      text-align: center;
+      font-size: 1rem;
+      border-radius: 50%;
+      backface-visibility: hidden;
+    }
+    .back {
+      font-size: 18px;
+      line-height: 23px;
+      background-color: white;
+      font-weight: 500;
+      img:not(.init-img) {
+        max-width: 50px;
+        aspect-ratio: 1;
+      }
+      img.init-img {
+        position: absolute;
+        top:0;
+        left: 0;
+        object-fit: cover;
+      }
+    }
+    .front {
+      color: white;
+      transform: rotateY(180deg);
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 22px;
+      border: 1px solid black;
+      img {
+        max-width: 40px;
+        aspect-ratio: 1;
+      }
     }
   }
 }
 
-
 .rvty-hero-l2-banner-cover-yellow {
-    position: absolute;
+  position: absolute;
   bottom: 10px;
   left: 0;
   width: 100%;
   height: var(--after-height);
   background-size: cover;
-    z-index: 0;
+  z-index: 0;
+  scale: var(--svg-yallow-scale);
+  transform-origin: bottom center;
 }
 .rvty-hero-l2-banner-cover-exclude {
-    position: absolute;
-  bottom: 0;
+  position: absolute;
+  bottom: -1px;
   left: 0;
-  width: 100%;
+  width: 120%;
   height: 169px;
   background-size: cover;
 }
 
-
 .hero-title {
   position: absolute;
   font-size: 96px;
+  color: black;
   white-space: nowrap;
-  opacity: 1;
+  opacity: 0;
 }
 /* Animated Text Start State */
 .animated-text {
   position: absolute;
   opacity: 0;
+  color: black;
   font-size: 48px;
 }
-
 
 /* 4. Responsiveness */
 @media (max-width: 768px) {

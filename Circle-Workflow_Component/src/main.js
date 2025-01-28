@@ -1,146 +1,107 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const svg = document.querySelector('.workflow-svg');
-  const svgPath = document.querySelector('#workflow-path');
   const container = document.querySelector('.workflow-container');
   const circles = document.querySelectorAll('.circle');
   const heroTitle = document.querySelector('.hero-title');
   const animatedTexts = document.querySelectorAll('.animated-text');
-  const circleRadius = 90;
-  const pathLength = svgPath.getTotalLength();
-  // GSAP Animation with ScrollTrigger
-  gsap.registerPlugin(ScrollTrigger);
-  // Show the previous button after the first click on the next button
-  let isPrevButtonVisible = false;
-  console.log(`Number of animated texts: ${animatedTexts.length}`);
   const bannerContainer = document.querySelector('.rvty-hero-container');
   const section = document.querySelector('.two');
   const content = section.querySelector('.content');
+  const video = document.getElementById("myVideo");
+  
+  const circleRadius = 90;
+  const targetTime = 10; // Time to trigger the video action
+  let hasTriggered = false;
 
-  // Ensure GSAP ScrollTrigger is registered
+  // GSAP setup
   gsap.registerPlugin(ScrollTrigger);
 
-
-  function adjustCircleSizes() {
-    const circles = document.querySelectorAll('.circle');
-    const svgPath = document.querySelector('#workflow-path');
-    const pathLength = svgPath.getTotalLength();
-    const minGap = 32; // 2rem in pixels
-    const maxRadius = 90; // Default radius
-    const circleCenters = [];
-  
-    // Calculate positions along the SVG path for each circle
-    circles.forEach((circle, index) => {
-      const offset = (index + 1) / (circles.length + 1); // Distribute evenly
-      const length = pathLength * offset;
-      const point = svgPath.getPointAtLength(length);
-      circleCenters.push({ x: point.x, y: point.y });
-    });
-  
-    // Adjust circle sizes to maintain at least a 2rem gap
-    for (let i = 0; i < circleCenters.length - 1; i++) {
-      const current = circleCenters[i];
-      const next = circleCenters[i + 1];
-  
-      const distance = Math.sqrt(
-        Math.pow(next.x - current.x, 2) + Math.pow(next.y - current.y, 2)
-      );
-  
-      // Calculate the maximum radius that ensures the minimum gap
-      const maxCircleRadius = (distance - minGap) / 2;
-      const adjustedRadius = Math.min(maxRadius, maxCircleRadius);
-  
-      circles[i].style.width = `${adjustedRadius * 2}px`;
-      circles[i].style.height = `${adjustedRadius * 2}px`;
-      circles[i].style.borderRadius = '50%'; // Ensure circles remain round
-    }
-  
-    // Adjust the last circle size
-    const lastCircle = circles[circleCenters.length - 1];
-    lastCircle.style.width = `${maxRadius * 2}px`;
-    lastCircle.style.height = `${maxRadius * 2}px`;
-    lastCircle.style.borderRadius = '50%';
-  }
-  
-  // Call this function whenever the circles are positioned
-  adjustCircleSizes();
-  
-  // If needed, debounce the function call on window resize
-  window.addEventListener('resize', debounce(adjustCircleSizes, 200));
-  
-
+  // ScrollTrigger for the section
   ScrollTrigger.create({
-    trigger: '.two', // Section being observed
-  start: 'top center +=300',
+    trigger: '.two',
+    start: 'top center +=300',
     end: 'bottom center',
     onEnter: () => console.log('Entered the section'),
     onLeave: () => console.log('Left the section'),
-    onUpdate: (self) => console.log(
-      `Current After Height: ${getComputedStyle(section).getPropertyValue("--after-height")}`
-    ),
+    onUpdate: (self) => {
+      console.log(
+        `Current After Height: ${getComputedStyle(section).getPropertyValue("--after-height")}`
+      );
+    },
   });
 
-  // Set initial values for the --before-top and --after-height variables in CSS
-  gsap.set(section, {
-    "--before-top": "0px",
-  });
+  // Initial CSS variables setup
+  gsap.set(section, { "--before-top": "0px" });
+  gsap.set(content, { opacity: 0 });
   gsap.set(bannerContainer, {
-    "--after-height": "88px",
+    "--after-height": "176px",
+    "--svg-yallow-scale": 1,
   });
-  // Animate the before pseudo-element
 
-  // Animate the after pseudo-element
+  // Animate the pseudo-element and scale
   gsap.to(bannerContainer, {
-    "--after-height": "400px", // Animate the pseudo-element's height
-    ease: "none", // Linear animation for smooth scrolling
+    "--after-height": "400px",
+    "--svg-yallow-scale": 1.2,
+    ease: "none",
     scrollTrigger: {
       trigger: bannerContainer,
-      start: "top", // Start when the section's top reaches the center
-      end: "bottom +=100", // End when the section's bottom reaches the center
+      start: "top",
+      end: "bottom -=50",
       scrub: true,
       onUpdate: (self) => {
-        console.log(
-          `Scroll Progress: ${self.progress}, After Height: ${getComputedStyle(section).getPropertyValue(
-            '--after-height'
-          )}`
-        );
+        console.log(`Scroll Progress: ${self.progress}`);
       },
     },
   });
 
-  // Animate the content inside the section
+  // Animate the section content
   gsap.to(content, {
-    y: -165, // Move content up
+    y: -165,
+    opacity: 1,
     ease: "power1.inOut",
     scrollTrigger: {
       trigger: section,
-      start: "top center", // Animation starts when the section's top reaches the center
-      end: "bottom center", // Animation ends when the section's bottom reaches the center
+      start: "-=500",
+      end: "bottom center",
       scrub: true,
-      onUpdate: (self) => {
-        console.log(`Content Progress: ${self.progress}`);
-      },
+      onUpdate: (self) => console.log(`Content Progress: ${self.progress}`),
     },
   });
 
-
-  // Hide SVG and circles initially
+  // Hide circles initially
   function hideWorkflowElements() {
-    gsap.set([svg, circles], { opacity: 0, visibility: "hidden" });
+    gsap.set(circles, { opacity: 0, visibility: "hidden" });
   }
 
-  // Show SVG and circles and start their animation
+  // Show and animate circles
   function showWorkflowElements() {
-    gsap.to([svg, circles], {
+    gsap.to(circles, {
       opacity: 1,
       visibility: "visible",
       duration: 1,
+      stagger: {
+        each: 1,
+        onStart: function () {
+          this.targets()[0].classList.add("flipped");
+        },
+      },
       ease: "power1.out",
-    });
+      onComplete: () => {
+        setTimeout(() => {
+          circles.forEach(circle => circle.classList.add("flip"));
 
-    animateSvgLine();
+          // Remove .init-img after flip animation
+          setTimeout(() => {
+            document.querySelectorAll(".init-img").forEach(img => {
+              img.style.opacity = "0";
+              setTimeout(() => img.style.display = "none", 300);
+            });
+          }, 1500); // Delay for flip animation
+        }, 500);
+      },
+    });
   }
 
-  // Center the Hero Title in the Container
+  // Center the hero title
   function centerHeroTitle() {
     const containerRect = container.getBoundingClientRect();
     const titleRect = heroTitle.getBoundingClientRect();
@@ -155,12 +116,13 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(`Hero title centered at: top=${centeredTop}px, left=${centeredLeft}px`);
   }
 
-  // Animate the Hero Title and First Animated Text
+  // Animate the hero title and texts
   function animateHeroTitle() {
     gsap.to(heroTitle, {
       delay: 1.5,
       duration: 1,
       fontSize: "18px",
+      opacity: 1,
       top: "110px",
       left: "120px",
       transform: "translate(0, 0)",
@@ -168,29 +130,22 @@ document.addEventListener('DOMContentLoaded', () => {
       onComplete: () => {
         showWorkflowElements();
 
-        // Set and animate the first text
-        gsap.set(animatedTexts[0], {
-          top: `120px`,
-          left: `120px`,
-          opacity: 1,
-        });
-
+        // Animate the first text
+        gsap.set(animatedTexts[0], { top: "120px", left: "120px", opacity: 1 });
         animateTextWithSplit(animatedTexts[0], 4, 0, () => {
-          // After the first text animation completes, animate the second text
+          // Animate the second text after the first
           gsap.set(animatedTexts[1], {
-            bottom: `120px`,
-            right: `120px`,
+            bottom: "120px",
+            right: "120px",
             opacity: 1,
           });
-
-          // Animate the second text
-          //animateTextWithSplit(animatedTexts[1], 2);
+          animateTextWithSplit(animatedTexts[1], 2);
         });
       },
     });
   }
 
-  // Animate Text with GSAP SplitText Plugin
+  // SplitText animation
   function animateTextWithSplit(element, totalDuration, startDelay = 0, onComplete = null) {
     const split = new SplitText(element, { type: "chars" });
     const chars = split.chars;
@@ -205,9 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         duration: charStagger,
         delay: startDelay,
         ease: "power1.out",
-        stagger: {
-          each: charStagger,
-        },
+        stagger: { each: charStagger },
         onComplete: () => {
           //split.revert();
           if (onComplete) onComplete();
@@ -216,112 +169,23 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  // Animate the SVG Line
-  function animateSvgLine() {
-    const circleTriggerPoints = Array.from(circles).map((_, index) => {
-      const offset = (index + 1) / (circles.length + 1);
-      return pathLength * offset;
-    });
-  
-    svgPath.style.strokeDasharray = pathLength;
-    svgPath.style.strokeDashoffset = pathLength;
-  
-    gsap.to(svgPath, {
-      delay: 0,
-      strokeDashoffset: 0,
-      duration: 5.5,
-      ease: "sine.inOut",
-      onUpdate: function () {
-        const currentLength = pathLength - gsap.getProperty(svgPath, "strokeDashoffset");
-  
-        circleTriggerPoints.forEach((triggerPoint, index) => {
-          const circle = circles[index];
-          if (currentLength >= triggerPoint && !circle.classList.contains("flip")) {
-            circle.classList.add("flip");
-          }
-        });
-        const fourthCircleTrigger = circleTriggerPoints[3];
-        if (currentLength >= fourthCircleTrigger && !animatedTexts[1].classList.contains("animated")) {
-          animatedTexts[1].classList.add("animated");
-          animateTextWithSplit(animatedTexts[1], 2);
-        }
-      },
-      onComplete: function () {
-        // Fade in the carousel navigation buttons
-        // gsap.to([nextButton], {
-        //   delay: 0,
-        //   opacity: 1,
-        //   visibility: "visible",
-        //   duration: 0.2,
-        //   ease: "power1.in",
-        // });
-      },
-    });
-  }
-
-  function getFirstIntersection() {
-    const step = 1;
-    let foundHorizontal = false;
-
-    for (let i = 0; i < pathLength; i += step) {
-      const point1 = svgPath.getPointAtLength(i);
-      const point2 = svgPath.getPointAtLength(i + step);
-      if (Math.abs(point1.y - point2.y) < 0.1) foundHorizontal = true;
-      if (foundHorizontal && Math.abs(point1.x - point2.x) < 0.1) return point1;
+  // Perform action when video reaches a specific time
+  video.addEventListener("timeupdate", () => {
+    if (!hasTriggered && video.currentTime >= targetTime) {
+      hasTriggered = true;
+      performAction();
     }
-    console.error("Couldn't find the first intersection point.");
-    return null;
+  });
+
+  // Custom action when video reaches target time
+  function performAction() {
+    video.remove();
+    centerHeroTitle();
+    animateHeroTitle();
+    console.log("The video has reached 10 seconds!");
   }
 
-  function getLastIntersection() {
-    const step = 1;
-    let foundHorizontal = false;
-
-    for (let i = pathLength; i >= 0; i -= step) {
-      const point1 = svgPath.getPointAtLength(i);
-      const point2 = svgPath.getPointAtLength(i - step);
-      if (Math.abs(point1.y - point2.y) < 0.1) foundHorizontal = true;
-      if (foundHorizontal && Math.abs(point1.x - point2.x) < 0.1) return point1;
-    }
-    console.error("Couldn't find the last intersection point.");
-    return null;
-  }
-
-  function positionCircles() {
-    const containerWidth = container.getBoundingClientRect().width;
-    const svgRect = svg.getBoundingClientRect();
-    const viewBox = svg.viewBox.baseVal;
-    const scaleX = containerWidth / viewBox.width;
-    const scaleY = svgRect.height / viewBox.height;
-
-    const firstIntersection = getFirstIntersection();
-    if (!firstIntersection) return;
-
-    const firstCircleX = firstIntersection.x * scaleX + circleRadius * 1.3;
-    const firstCircleY = firstIntersection.y * scaleY + circleRadius * 1.3;
-
-    const firstCircle = circles[0];
-    firstCircle.style.left = `${firstCircleX - circleRadius}px`;
-    firstCircle.style.top = `${firstCircleY - circleRadius * 1.5}px`;
-
-    const lastIntersection = getLastIntersection();
-    if (!lastIntersection) return;
-
-    const lastCircleX = lastIntersection.x * scaleX;
-    const totalSpacing = lastCircleX - firstCircleX;
-    const circleSpacing = totalSpacing / (circles.length - 1);
-
-    circles.forEach((circle, index) => {
-      const xPosition = firstCircleX + index * circleSpacing - circleRadius;
-      const yPosition = firstCircleY - circleRadius;
-
-      circle.style.left = `${xPosition}px`;
-      circle.style.top = `${yPosition}px`;
-
-      console.log(`Circle ${index + 1} positioned at x: ${xPosition}, y: ${yPosition}`);
-    });
-  }
-
+  // Debounce utility for resize events
   function debounce(func, wait) {
     let timeout;
     return function (...args) {
@@ -330,15 +194,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  // Initialize
   hideWorkflowElements();
-  centerHeroTitle();
-  animatedTexts.forEach((text) => new SplitText(text, { type: "chars" }));
-  animateHeroTitle();
-  positionCircles();
 
   window.addEventListener("resize", debounce(() => {
     centerHeroTitle();
-    adjustCircleSizes();
-    positionCircles();
   }, 200));
 });
