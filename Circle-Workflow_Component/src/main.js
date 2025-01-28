@@ -139,82 +139,82 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 
-  const carousel = document.querySelector(".carousel");
-  const slides = document.querySelectorAll(".carousel-slide");
-  const prevButton = document.querySelector(".carousel-control.prev");
-  const nextButton = document.querySelector(".carousel-control.next");
+  // const carousel = document.querySelector(".carousel");
+  // const slides = document.querySelectorAll(".carousel-slide");
+  // const prevButton = document.querySelector(".carousel-control.prev");
+  // const nextButton = document.querySelector(".carousel-control.next");
 
-  let currentIndex = 0; // Tracks the current slide
-  const carouselWidth = carousel.getBoundingClientRect().width;
-  const containerWidth = document.querySelector('.carousel-container').getBoundingClientRect().width;
+  // let currentIndex = 0; // Tracks the current slide
+  // const carouselWidth = carousel.getBoundingClientRect().width;
+  // const containerWidth = document.querySelector('.carousel-container').getBoundingClientRect().width;
 
-  console.log(`Carousel Width: ${carouselWidth}`);
-  console.log(`Container Width: ${containerWidth}`);
+  // console.log(`Carousel Width: ${carouselWidth}`);
+  // console.log(`Container Width: ${containerWidth}`);
 
-  // Helper function to log slide visibility
-  function logSlideVisibility() {
-    slides.forEach((slide, index) => {
-      const computedStyle = window.getComputedStyle(slide);
-      console.log(
-        `Slide ${index + 1}: visibility=${computedStyle.visibility}, opacity=${computedStyle.opacity}`
-      );
-    });
-  }
+  // // Helper function to log slide visibility
+  // function logSlideVisibility() {
+  //   slides.forEach((slide, index) => {
+  //     const computedStyle = window.getComputedStyle(slide);
+  //     console.log(
+  //       `Slide ${index + 1}: visibility=${computedStyle.visibility}, opacity=${computedStyle.opacity}`
+  //     );
+  //   });
+  // }
 
-  // Helper function to log carousel transform
-  function logCarouselTransform() {
-    const computedStyle = window.getComputedStyle(carousel);
-    console.log(`Carousel transform: ${computedStyle.transform}`);
-  }
+  // // Helper function to log carousel transform
+  // function logCarouselTransform() {
+  //   const computedStyle = window.getComputedStyle(carousel);
+  //   console.log(`Carousel transform: ${computedStyle.transform}`);
+  // }
 
-  // Function to update the carousel's position
-  function updateCarousel() {
-    const offset = -currentIndex * 100; // Calculate translateX percentage
-    carousel.style.transform = `translateX(${offset}%)`;
-  }
+  // // Function to update the carousel's position
+  // function updateCarousel() {
+  //   const offset = -currentIndex * 100; // Calculate translateX percentage
+  //   carousel.style.transform = `translateX(${offset}%)`;
+  // }
 
-  slides.forEach((slide, index) => {
-    console.log(`Slide ${index + 1} width: ${slide.getBoundingClientRect().width}`);
-  });
+  // slides.forEach((slide, index) => {
+  //   console.log(`Slide ${index + 1} width: ${slide.getBoundingClientRect().width}`);
+  // });
   
 
-  // Event listener for the next button
-  nextButton.addEventListener('click', () => {
-    if (!isPrevButtonVisible) {
-      prevButton.style.opacity = '1';
-      prevButton.style.visibility = 'visible';
-      isPrevButtonVisible = true; // Ensure it only happens once
-    }
-    currentIndex = (currentIndex + 1) % slides.length; // Cycle to the next slide
-    const newTransform = `translateX(-${currentIndex * 100}%)`;
-    carousel.style.transform = newTransform;
+  // // Event listener for the next button
+  // nextButton.addEventListener('click', () => {
+  //   if (!isPrevButtonVisible) {
+  //     prevButton.style.opacity = '1';
+  //     prevButton.style.visibility = 'visible';
+  //     isPrevButtonVisible = true; // Ensure it only happens once
+  //   }
+  //   currentIndex = (currentIndex + 1) % slides.length; // Cycle to the next slide
+  //   const newTransform = `translateX(-${currentIndex * 100}%)`;
+  //   carousel.style.transform = newTransform;
   
-    // Log dimensions for debugging
-    const carouselWidth = carousel.getBoundingClientRect().width;
-    const containerWidth = document.querySelector('.carousel-container').getBoundingClientRect().width;
+  //   // Log dimensions for debugging
+  //   const carouselWidth = carousel.getBoundingClientRect().width;
+  //   const containerWidth = document.querySelector('.carousel-container').getBoundingClientRect().width;
   
-    console.log(`Next Slide Index: ${currentIndex}`);
-    console.log(`Updated carousel transform: ${newTransform}`);
-    console.log(`Carousel Width: ${carouselWidth}`);
-    console.log(`Container Width: ${containerWidth}`);
-    logSlideVisibility();
-  });
+  //   console.log(`Next Slide Index: ${currentIndex}`);
+  //   console.log(`Updated carousel transform: ${newTransform}`);
+  //   console.log(`Carousel Width: ${carouselWidth}`);
+  //   console.log(`Container Width: ${containerWidth}`);
+  //   logSlideVisibility();
+  // });
   
-  prevButton.addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + slides.length) % slides.length; // Cycle to the previous slide
-    const newTransform = `translateX(-${currentIndex * 100}%)`;
-    carousel.style.transform = newTransform;
+  // prevButton.addEventListener('click', () => {
+  //   currentIndex = (currentIndex - 1 + slides.length) % slides.length; // Cycle to the previous slide
+  //   const newTransform = `translateX(-${currentIndex * 100}%)`;
+  //   carousel.style.transform = newTransform;
   
-    console.log(`Previous Slide Index: ${currentIndex}`);
-    console.log(`Updated carousel transform: ${newTransform}`);
-    logSlideVisibility();
-  });
+  //   console.log(`Previous Slide Index: ${currentIndex}`);
+  //   console.log(`Updated carousel transform: ${newTransform}`);
+  //   logSlideVisibility();
+  // });
 
-  // Initialize the carousel at the first slide
-  updateCarousel();
+  // // Initialize the carousel at the first slide
+  // updateCarousel();
 
-  // Update carousel on window resize
-  window.addEventListener('resize', updateCarousel);
+  // // Update carousel on window resize
+  // window.addEventListener('resize', updateCarousel);
 
   // Hide SVG and circles initially
   function hideWorkflowElements() {
@@ -341,13 +341,13 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       onComplete: function () {
         // Fade in the carousel navigation buttons
-        gsap.to([nextButton], {
-          delay: 0,
-          opacity: 1,
-          visibility: "visible",
-          duration: 0.2,
-          ease: "power1.in",
-        });
+        // gsap.to([nextButton], {
+        //   delay: 0,
+        //   opacity: 1,
+        //   visibility: "visible",
+        //   duration: 0.2,
+        //   ease: "power1.in",
+        // });
       },
     });
   }
