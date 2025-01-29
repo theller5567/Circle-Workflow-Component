@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const video = document.getElementById("myVideo");
   
   const circleRadius = 90;
-  const targetTime = 10; // Time to trigger the video action
+  const targetTime = 5; // Time to trigger the video action
   let hasTriggered = false;
 
   // GSAP setup
@@ -88,12 +88,14 @@ document.addEventListener('DOMContentLoaded', () => {
       onComplete: () => {
         setTimeout(() => {
           circles.forEach(circle => circle.classList.add("flip"));
-
+          
           // Remove .init-img after flip animation
           setTimeout(() => {
             document.querySelectorAll(".init-img").forEach(img => {
               img.style.opacity = "0";
-              setTimeout(() => img.style.display = "none", 300);
+              setTimeout(() => {
+                img.style.display = "none", 300
+              });
             });
           }, 1500); // Delay for flip animation
         }, 500);
@@ -118,18 +120,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Animate the hero title and texts
   function animateHeroTitle() {
-    gsap.to(heroTitle, {
-      delay: 1.5,
+    const tl = gsap.timeline();
+  
+    tl.to(heroTitle, {
+      opacity: 1, // Fade in
       duration: 1,
-      fontSize: "18px",
-      opacity: 1,
-      top: "110px",
+      ease: "power1.out",
+    })
+    .to(heroTitle, {
+      delay: 1, // Wait 1 second before moving
+      duration: 1,
+      fontSize: "24px",
+      top: "100px",
       left: "120px",
       transform: "translate(0, 0)",
       ease: "power1.out",
       onComplete: () => {
         showWorkflowElements();
-
+  
         // Animate the first text
         gsap.set(animatedTexts[0], { top: "120px", left: "120px", opacity: 1 });
         animateTextWithSplit(animatedTexts[0], 4, 0, () => {
@@ -144,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
       },
     });
   }
-
+  
   // SplitText animation
   function animateTextWithSplit(element, totalDuration, startDelay = 0, onComplete = null) {
     const split = new SplitText(element, { type: "chars" });
@@ -180,7 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Custom action when video reaches target time
   function performAction() {
     video.remove();
-    centerHeroTitle();
     animateHeroTitle();
     console.log("The video has reached 10 seconds!");
   }
@@ -196,6 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize
   hideWorkflowElements();
+  centerHeroTitle();
 
   window.addEventListener("resize", debounce(() => {
     centerHeroTitle();
