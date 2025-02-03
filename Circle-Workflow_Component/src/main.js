@@ -1,183 +1,190 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const container = document.querySelector('.workflow-container');
-  const circles = document.querySelectorAll('.circle');
-  const heroTitle = document.querySelector('.hero-title');
-  const animatedTexts = document.querySelectorAll('.animated-text');
-  const bannerContainer = document.querySelector('.rvty-hero-container');
-  const section = document.querySelector('.two');
-  const content = section.querySelector('.content');
+document.addEventListener("DOMContentLoaded", () => {
+  const container = document.querySelector(".workflow-container");
+  const circles = document.querySelectorAll(".circle");
+  const heroTitle = document.querySelector(".hero-title");
+  const animatedTexts = document.querySelectorAll(".animated-text");
+  const section = document.querySelector(".two");
+  const content = section.querySelector(".content");
   const video = document.getElementById("myVideo");
-  
-  const circleRadius = 90;
+  const yellowSVGWave = document.querySelector(".rvty-hero-l2-banner-cover-yellow");
+
   const targetTime = 5; // Time to trigger the video action
   let hasTriggered = false;
 
-  // GSAP setup
-  gsap.registerPlugin(ScrollTrigger);
+  if (!yellowSVGWave) {
+    console.error("❌ ERROR: .rvty-hero-l2-banner-cover-yellow not found!");
+  } else {
+    console.log(`Initial height: ${yellowSVGWave.getBBox().height}px`);
+  }
+  console.log("Initial scaleY:", getComputedStyle(yellowSVGWave).transform);
 
-  // ScrollTrigger for the section
-  ScrollTrigger.create({
-    trigger: '.two',
-    start: 'top center +=300',
-    end: 'bottom center',
-    onEnter: () => console.log('Entered the section'),
-    onLeave: () => console.log('Left the section'),
-    onUpdate: (self) => {
-      console.log(
-        `Current After Height: ${getComputedStyle(section).getPropertyValue("--after-height")}`
-      );
-    },
+
+  // **Ensure Yellow SVG starts at 176px before animation**
+  gsap.set(yellowSVGWave, {
+    transformOrigin: "bottom center", 
+    scaleY: 1, 
   });
-
-  // Initial CSS variables setup
-  gsap.set(section, { "--before-top": "0px" });
-  gsap.set(content, { opacity: 0 });
-  gsap.set(bannerContainer, {
-    "--after-height": "176px",
-    "--svg-yallow-scale": 1,
-  });
-
-  // Animate the pseudo-element and scale
-  gsap.to(bannerContainer, {
-    "--after-height": "400px",
-    "--svg-yallow-scale": 1.2,
-    ease: "none",
-    scrollTrigger: {
-      trigger: bannerContainer,
-      start: "top",
-      end: "bottom -=50",
-      scrub: true,
-      onUpdate: (self) => {
-        console.log(`Scroll Progress: ${self.progress}`);
-      },
-    },
-  });
-
-  // Animate the section content
-  gsap.to(content, {
-    y: -165,
-    opacity: 1,
-    ease: "power1.inOut",
+  
+  gsap.to(yellowSVGWave, {
+    scaleY: 3, 
+    ease: "power1.out",
     scrollTrigger: {
       trigger: section,
-      start: "-=500",
-      end: "bottom center",
-      scrub: true,
-      onUpdate: (self) => console.log(`Content Progress: ${self.progress}`),
+      start: "top center",
+      end: '+=500px',
+      scrub: 1,
+      immediateRender: false, // ❌ Prevents jumping on load
+      markers: true,
+      
+      onUpdate: (self) => {
+        console.log(`GSAP running - Scroll Progress: ${self.progress}`);
+        console.log(`GSAP scaleY: ${getComputedStyle(yellowSVGWave).transform}`);
+      },
     },
   });
+  
+  
 
-  // Hide circles initially
-  function hideWorkflowElements() {
-    gsap.set(circles, { opacity: 0, visibility: "hidden" });
+
+  // **Initial Styles**
+  gsap.set(section, { "--before-top": "0px" });
+  gsap.set(content, { opacity: 0 });
+  gsap.set(circles, { opacity: 0, visibility: "hidden" });
+  gsap.set(animatedTexts, { opacity: 0 });
+  gsap.set(heroTitle, { opacity: 0 });
+
+  // **Center Hero Title in the Container**
+  function centerHeroTitle() {
+    const containerRect = container.getBoundingClientRect();
+    const titleRect = heroTitle.getBoundingClientRect();
+    heroTitle.style.position = "absolute";
+    heroTitle.style.top = `${containerRect.height / 2 - titleRect.height / 2}px`;
+    heroTitle.style.left = `${containerRect.width / 2 - titleRect.width / 2}px`;
   }
 
-  // Show and animate circles
-  function showWorkflowElements() {
-    gsap.to(circles, {
+  // **Center First Animated Text**
+  function centerFirstAnimatedText() {
+    const containerRect = container.getBoundingClientRect();
+    const textRect = animatedTexts[0].getBoundingClientRect();
+
+    animatedTexts[0].style.position = "absolute";
+    animatedTexts[0].style.top = `${containerRect.height / 2 - textRect.height / 2}px`;
+    animatedTexts[0].style.left = `${containerRect.width / 2 - textRect.width / 2}px`;
+  }
+
+  // **Scroll Animation using ScrollTrigger**
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.create({
+    trigger: section,
+    start: "top center",
+    onEnter: () => animateContent(),
+  });
+  console.log(section.getBoundingClientRect().top);
+
+  function animateContent() {
+    gsap.to(content, {
+      y: -160,
       opacity: 1,
-      visibility: "visible",
-      duration: 1,
-      stagger: {
-        each: 1,
-        onStart: function () {
-          this.targets()[0].classList.add("flipped");
-        },
-      },
+      duration: 2,
       ease: "power1.out",
-      onComplete: () => {
-        setTimeout(() => {
-          circles.forEach(circle => circle.classList.add("flip"));
-          
-          // Remove .init-img after flip animation
-          setTimeout(() => {
-            document.querySelectorAll(".init-img").forEach(img => {
-              img.style.opacity = "0";
-              setTimeout(() => {
-                img.style.display = "none", 300
-              });
-            });
-          }, 1500); // Delay for flip animation
-        }, 500);
+      scrollTrigger: {
+        trigger: section,
+        start: "top center",
+        end: "+=300px",
+        scrub: 1,
       },
     });
   }
 
-  // Center the hero title
-  function centerHeroTitle() {
-    const containerRect = container.getBoundingClientRect();
-    const titleRect = heroTitle.getBoundingClientRect();
-
-    const centeredTop = containerRect.height / 2 - titleRect.height / 2;
-    const centeredLeft = containerRect.width / 2 - titleRect.width / 2;
-
-    heroTitle.style.position = 'absolute';
-    heroTitle.style.top = `${centeredTop}px`;
-    heroTitle.style.left = `${centeredLeft}px`;
-
-    console.log(`Hero title centered at: top=${centeredTop}px, left=${centeredLeft}px`);
+  // **Animate the first animated-text from center to top-left**
+  function animateFirstAnimatedText() {
+    gsap.to(animatedTexts[0], {
+      duration: 1,
+      delay: 0.5,
+      top: "120px",
+      left: "120px",
+      xPercent: 0,
+      yPercent: 0,
+      opacity: 1,
+      ease: "power1.out",
+      onComplete: () => {
+        showWorkflowElements();
+      },
+    });
   }
 
-  // Animate the hero title and texts
+  // **Update Hero Title Animation**
   function animateHeroTitle() {
-    const tl = gsap.timeline();
-  
-    tl.to(heroTitle, {
-      opacity: 1, // Fade in
-      duration: 1,
-      ease: "power1.out",
-    })
-    .to(heroTitle, {
-      delay: 1, // Wait 1 second before moving
+    gsap.to(heroTitle, { opacity: 1, duration: 1, delay: 1 });
+
+    gsap.to(heroTitle, {
+      delay: 1.5,
       duration: 1,
       fontSize: "24px",
       top: "100px",
       left: "120px",
-      transform: "translate(0, 0)",
       ease: "power1.out",
       onComplete: () => {
-        showWorkflowElements();
-  
-        // Animate the first text
-        gsap.set(animatedTexts[0], { top: "120px", left: "120px", opacity: 1 });
-        animateTextWithSplit(animatedTexts[0], 4, 0, () => {
-          // Animate the second text after the first
-          gsap.set(animatedTexts[1], {
-            bottom: "120px",
-            right: "120px",
-            opacity: 1,
-          });
-          animateTextWithSplit(animatedTexts[1], 2);
+        gsap.to(animatedTexts[0], { opacity: 1, duration: 0.3, delay: 0.5 });
+        animateFirstAnimatedText();
+      },
+    });
+  }
+
+  // **Call center function before animation**
+  centerHeroTitle();
+  centerFirstAnimatedText();
+
+  // **Animate Circles and Second Animated Text**
+  function showWorkflowElements() {
+    gsap.to(circles, {
+      opacity: 1,
+      visibility: "visible",
+      duration: 0.5,
+      stagger: {
+        each: 0.5,
+        onStart: function () {
+          const index = Array.from(circles).indexOf(this.targets()[0]);
+
+          // When the 4th circle starts animating in, fade in second animated text
+          if (index === 3) {
+            gsap.to(animatedTexts[1], {
+              delay: 0.5,
+              opacity: 1,
+              duration: 1,
+              ease: "power1.out",
+            });
+          }
+        },
+      },
+
+      ease: "power1.out",
+      onComplete: () => {
+        gsap.to(circles, {
+          duration: 0.3,
+          onComplete: () => {
+            circles.forEach(circle => circle.classList.add("flipped"));
+
+            setTimeout(() => {
+              circles.forEach(circle => circle.classList.add("flip"));
+
+              setTimeout(() => {
+                document.querySelectorAll(".init-img").forEach(img => {
+                  gsap.to(img, {
+                    opacity: 0,
+                    duration: 0.5,
+                    onComplete: () => (img.style.display = "none"),
+                  });
+                });
+              },);
+            }, 500);
+          },
         });
       },
     });
   }
-  
-  // SplitText animation
-  function animateTextWithSplit(element, totalDuration, startDelay = 0, onComplete = null) {
-    const split = new SplitText(element, { type: "chars" });
-    const chars = split.chars;
-    const charStagger = totalDuration / chars.length;
 
-    gsap.fromTo(
-      chars,
-      { opacity: 0, y: 50 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: charStagger,
-        delay: startDelay,
-        ease: "power1.out",
-        stagger: { each: charStagger },
-        onComplete: () => {
-          //split.revert();
-          if (onComplete) onComplete();
-        },
-      }
-    );
-  }
-
-  // Perform action when video reaches a specific time
+  // **Trigger Animation at Specific Video Time**
   video.addEventListener("timeupdate", () => {
     if (!hasTriggered && video.currentTime >= targetTime) {
       hasTriggered = true;
@@ -185,14 +192,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Custom action when video reaches target time
   function performAction() {
-    video.remove();
-    animateHeroTitle();
-    console.log("The video has reached 10 seconds!");
+    gsap.to(video, { opacity: 0, onComplete(){
+      video.remove();
+    } });
+    console.log("The video has reached 5 seconds!");
+    gsap.to(heroTitle, {
+      opacity: 1,
+      duration: 1,
+      ease: "power1.out",
+      delay: 1, // Small delay to ensure video is fully gone
+    });
+  
+    animateHeroTitle(); // Proceed with the rest of the animation
   }
 
-  // Debounce utility for resize events
+
+  // **Debounce Utility for Resize Events**
   function debounce(func, wait) {
     let timeout;
     return function (...args) {
@@ -201,11 +217,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Initialize
-  hideWorkflowElements();
-  centerHeroTitle();
+  // **Initialize**
+  window.addEventListener("resize", debounce(centerHeroTitle, 200));
 
-  window.addEventListener("resize", debounce(() => {
-    centerHeroTitle();
-  }, 200));
+  // **Trigger Hero Title Animation**
+  setTimeout(() => {
+    animateHeroTitle();
+  }, 4000);
 });
