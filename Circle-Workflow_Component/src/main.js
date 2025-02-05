@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
           }
           if (index === 5) {
-            // **✅ Fade out and remove video2**
+            // Fade out and remove video2
             if (video2) {
               gsap.to(video2, {
                 delay: 1.3,
@@ -214,14 +214,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     animateHeroTitle(); // Proceed with the rest of the animation
-  }
-
-  // **Debounce Utility for Resize Events**
-  function debounce(func, wait) {
-    let timeout;
-    return function (...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
   }
 });
